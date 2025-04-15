@@ -1,3 +1,18 @@
-node_modules
-# Keep environment variables out of version control
-.env
+# Node Modules
+node_modules/
+
+# .env files
+.env*
+
+# IDE specific folders
+.vscode/
+.idea/
+
+# npm logs
+npm-debug.log*
+
+# Prettier Configuration File (optional, if you don't want to track this file)
+.prettierrc
+.prettierignore
+
+

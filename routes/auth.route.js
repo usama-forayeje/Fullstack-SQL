@@ -1,19 +1,33 @@
-import express from "express";
+import express from 'express';
 import {
+  adminDashboard,
+  forgotPassword,
   loginUser,
   logoutUser,
   registerUser,
+  resetPassword,
+  userProfile,
   verifyUser,
-} from "../controllers/auth.controller.js";
+} from '../controllers/auth.controller.js';
+import { authorizeRoles, isLoggedIn } from '../middlewares/auth.middleware.js';
 
 const userRouter = express.Router();
 
-userRouter.post("/register", registerUser);
+userRouter.post('/register', registerUser);
+userRouter.post('/login', loginUser);
+userRouter.post('/logout', isLoggedIn, logoutUser);
 
-userRouter.post("/login", loginUser);
+userRouter.get('/verify/:token', verifyUser);
+userRouter.post('/forgotPassword', forgotPassword);
+userRouter.post('/resetPassword/:token', resetPassword);
 
-userRouter.post("/verify", verifyUser);
+userRouter.get('/userProfile', isLoggedIn, userProfile);
 
-userRouter.post("/logout", logoutUser);
+userRouter.get(
+  '/dashboard',
+  isLoggedIn,
+  authorizeRoles('admin'),
+  adminDashboard
+);
 
 export default userRouter;
