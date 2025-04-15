@@ -436,17 +436,37 @@ const userProfile = async (req, res) => {
   }
 };
 
-const adminDashboard = (req, res) => {
+const adminDashboard = async (req, res) => {
   try {
+    // Get user ID from the decoded JWT token (req.user is set by the isLoggedIn middleware)
+    const userId = req.user.id;
+
+    // Find the user in the database using the user ID
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    // If user not found, return an error
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Send success response with user data
     res.status(200).json({
       success: true,
-      message: `Welcome to the Admin Dashboard, ${req.user.name}`,
-      user: req.user,
+      message: `Welcome to the Admin Dashboard, ${user.name}`,
+      user: user,
     });
   } catch (error) {
+    // Log error and send failure response
     res.status(500).json({
       success: false,
-      message: 'Something went wrong in Admin Dashboard',
+      message: "Something went wrong in Admin Dashboard",
       error: error.message,
     });
   }
